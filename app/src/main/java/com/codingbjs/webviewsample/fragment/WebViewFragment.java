@@ -1,13 +1,15 @@
 package com.codingbjs.webviewsample.fragment;
 
-import android.app.Activity;
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -21,9 +23,10 @@ import androidx.fragment.app.Fragment;
 import com.codingbjs.webviewsample.activity.WebViewActivity;
 import com.codingbjs.webviewsample.databinding.FragmentWebViewBinding;
 
-import java.util.Objects;
-
 public class WebViewFragment extends Fragment implements OnBackPressedListener{
+
+        private static final String ASSETS_FILE = "file:///android_asset/www/index.html";
+        private static final String DAUM = "http://daum.net";
 
         FragmentWebViewBinding binding;
 
@@ -46,6 +49,7 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             }
         });
 
+
         binding.webView.getSettings().setJavaScriptEnabled(true);
 
         binding.webView.setWebViewClient(new WebViewClient() {
@@ -53,22 +57,31 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return false;
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(binding.domainEditText.getWindowToken(), 0);
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                binding.progressBar.setVisibility(View.GONE);
+                super.onPageFinished(view, url);
+            }
         });
 
         binding.webView.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-                binding.progressBar.setVisibility(View.VISIBLE);
-                if(newProgress == 100) {
-                    binding.progressBar.setVisibility(View.GONE);
-                }else {
-                    binding.progressBar.setProgress(newProgress);
-                }
+                binding.progressBar.setProgress(newProgress);
             }
         });
 
-        binding.webView.loadUrl("file:///android_asset/www/index.html");
-
+        binding.webView.loadUrl(ASSETS_FILE);
+//
         return binding.getRoot();
     }
 
