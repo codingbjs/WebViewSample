@@ -67,7 +67,7 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             }
         });
 
-        binding.webView.loadUrl("file:///android_asset/index.html");
+        binding.webView.loadUrl("file:///android_asset/www/index.html");
 
         return binding.getRoot();
     }
