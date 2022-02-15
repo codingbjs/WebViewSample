@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WebViewSample">
         <activity
-            android:name=".WebViewActivity"
+            android:name=".activity.WebViewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
