@@ -35,13 +35,11 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
         binding.domainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                Log.d("onEditorAction", "onEditorAction() called with: textView = [" + textView + "], i = [" + i + "], keyEvent = [" + keyEvent + "]");
                 if(i == EditorInfo.IME_ACTION_NEXT) {
                     String url = textView.getText().toString();
                     if(!url.contains("https://") && !url.contains("http://")) {
                         url = "https://" + url;
                     }
-                    Log.d("url", url);
                     binding.webView.loadUrl(url);
                 }
                 return false;
@@ -69,7 +67,7 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             }
         });
 
-        binding.webView.loadUrl("https://www.daum.net");
+        binding.webView.loadUrl("file:///android_asset/index.html");
 
         return binding.getRoot();
     }
