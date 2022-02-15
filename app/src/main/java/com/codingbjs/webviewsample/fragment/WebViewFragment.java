@@ -1,5 +1,6 @@
 package com.codingbjs.webviewsample.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,9 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.codingbjs.webviewsample.activity.WebViewActivity;
 import com.codingbjs.webviewsample.databinding.FragmentWebViewBinding;
 
-public class WebViewFragment extends Fragment {
+import java.util.Objects;
+
+public class WebViewFragment extends Fragment implements OnBackPressedListener{
 
         FragmentWebViewBinding binding;
 
@@ -70,6 +74,22 @@ public class WebViewFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        WebViewActivity webViewActivity = (WebViewActivity) getActivity();
+        if (webViewActivity != null) {
+            webViewActivity.setOnBackPressedListener(this);
+        }
+    }
 
+    @Override
+    public void onBackPressed() {
+        if(binding.webView.canGoBack()){
+            binding.webView.goBack();
+        }else {
+            requireActivity().finish();
+        }
+    }
 }
