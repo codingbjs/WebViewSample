@@ -13,7 +13,16 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/load_url_button"
+        android:layout_margin="16dp"/>
+
+    <Button
+        android:id="@+id/load_url_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/load_url_button_text"
         android:layout_margin="16dp"/>
 
     <ProgressBar

@@ -39,13 +39,16 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if(i == EditorInfo.IME_ACTION_NEXT) {
-                    String url = textView.getText().toString();
-                    if(!url.contains("https://") && !url.contains("http://")) {
-                        url = "https://" + url;
-                    }
-                    binding.webView.loadUrl(url);
+                    loadUrl(textView.getText().toString());
                 }
                 return false;
+            }
+        });
+
+        binding.loadUrlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadUrl(binding.domainEditText.getText().toString());
             }
         });
 
@@ -80,10 +83,19 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             }
         });
 
-        binding.webView.loadUrl(ASSETS_FILE);
+        loadUrl(ASSETS_FILE);
 //
         return binding.getRoot();
     }
+
+
+    private void loadUrl(String url) {
+        if(!url.contains("https://") && !url.contains("http://") && !url.contains("file:///")) {
+            url = "https://" + url;
+        }
+        binding.webView.loadUrl(url);
+    }
+
 
     @Override
     public void onResume() {
