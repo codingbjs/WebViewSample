@@ -23,22 +23,35 @@ import androidx.fragment.app.Fragment;
 import com.codingbjs.webviewsample.activity.WebViewActivity;
 import com.codingbjs.webviewsample.databinding.FragmentWebViewBinding;
 
-public class WebViewFragment extends Fragment implements OnBackPressedListener{
+public class WebViewFragment extends Fragment {
 
-        private static final String ASSETS_FILE = "file:///android_asset/www/index.html";
-        private static final String DAUM = "http://daum.net";
+    private static final String ASSETS_FILE = "file:///android_asset/www/index.html";
+    private static final String DAUM = "http://daum.net";
 
-        FragmentWebViewBinding binding;
+    FragmentWebViewBinding binding;
+
+    OnBackPressedListener onBackPressedListener;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentWebViewBinding.inflate(inflater, container, false);
 
+        onBackPressedListener = new OnBackPressedListener() {
+            @Override
+            public void onBackPressed() {
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack();
+                } else {
+                    requireActivity().finish();
+                }
+            }
+        };
+
         binding.domainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_NEXT) {
+                if (i == EditorInfo.IME_ACTION_NEXT) {
                     loadUrl(textView.getText().toString());
                 }
                 return false;
@@ -51,7 +64,6 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
                 loadUrl(binding.domainEditText.getText().toString());
             }
         });
-
 
         binding.webView.getSettings().setJavaScriptEnabled(true);
 
@@ -76,7 +88,7 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
             }
         });
 
-        binding.webView.setWebChromeClient(new WebChromeClient(){
+        binding.webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 binding.progressBar.setProgress(newProgress);
@@ -84,13 +96,13 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
         });
 
         loadUrl(ASSETS_FILE);
-//
+
         return binding.getRoot();
     }
 
 
     private void loadUrl(String url) {
-        if(!url.contains("https://") && !url.contains("http://") && !url.contains("file:///")) {
+        if (!url.contains("https://") && !url.contains("http://") && !url.contains("file:///")) {
             url = "https://" + url;
         }
         binding.webView.loadUrl(url);
@@ -103,16 +115,9 @@ public class WebViewFragment extends Fragment implements OnBackPressedListener{
 
         WebViewActivity webViewActivity = (WebViewActivity) getActivity();
         if (webViewActivity != null) {
-            webViewActivity.setOnBackPressedListener(this);
+            webViewActivity.setOnBackPressedListener(onBackPressedListener);
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if(binding.webView.canGoBack()){
-            binding.webView.goBack();
-        }else {
-            requireActivity().finish();
-        }
-    }
+
 }
