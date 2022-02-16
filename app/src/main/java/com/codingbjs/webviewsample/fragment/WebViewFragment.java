@@ -2,6 +2,7 @@ package com.codingbjs.webviewsample.fragment;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -22,10 +23,19 @@ import androidx.fragment.app.Fragment;
 
 import com.codingbjs.webviewsample.activity.WebViewActivity;
 import com.codingbjs.webviewsample.databinding.FragmentWebViewBinding;
+import com.codingbjs.webviewsample.webinterface.WebAppInterface;
+
+
+/*
+*  WebView -> https://developer.android.com/guide/webapps/webview
+*/
+
 
 public class WebViewFragment extends Fragment {
 
-    private static final String ASSETS_FILE = "file:///android_asset/www/index.html";
+    private static final String INDEX_HTML = "file:///android_asset/www/index.html";
+    private static final String FORM_DATA_HTML = "file:///android_asset/www/form_data.html";
+
     private static final String DAUM = "http://daum.net";
 
     FragmentWebViewBinding binding;
@@ -84,6 +94,16 @@ public class WebViewFragment extends Fragment {
             @Override
             public void onPageFinished(WebView view, String url) {
                 binding.progressBar.setVisibility(View.GONE);
+
+                String keyword = "Form Data Test";
+
+                String script = "javascript:function afterLoad() {"
+                        + "document.getElementById('keyword').value = '" + keyword + "';"
+                        + "};"
+                        + "afterLoad();";
+
+                view.loadUrl(script);
+
                 super.onPageFinished(view, url);
             }
         });
@@ -95,7 +115,8 @@ public class WebViewFragment extends Fragment {
             }
         });
 
-        loadUrl(ASSETS_FILE);
+        loadUrl(FORM_DATA_HTML);
+        binding.webView.addJavascriptInterface(new WebAppInterface(getActivity()), "WebAppInterface");
 
         return binding.getRoot();
     }
@@ -118,6 +139,5 @@ public class WebViewFragment extends Fragment {
             webViewActivity.setOnBackPressedListener(onBackPressedListener);
         }
     }
-
 
 }
